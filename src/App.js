@@ -5,30 +5,76 @@ import { Button, Input, message, Table } from "antd"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useState, useEffect } from "react"
 
-const columns = [
-  {
-    title: "Shorten Url",
-    dataIndex: "shorten_url",
-    key: "shorten_url",
-  },
-  {
-    title: "Action",
-    render: () => {
-      return (
-        <div style={{ display: "flex" }}>
-          <div style={{ paddingRight: "1rem" }}>
-            <EditOutlined />
-          </div>
-          <div>
-            <DeleteOutlined />
-          </div>
-        </div>
-      )
-    },
-  },
-]
-
 function App() {
+  const [editStatus, setEditStatus] = useState(false)
+  const [urlUpdate, setUrlUpdate] = useState("")
+
+  const handleChangeEditStatus = () => {
+    setEditStatus(true)
+  }
+
+  const handleChangeIputUrlUpdate = e => setUrlUpdate(e.target.value)
+
+  const handleSaveUrl = id => {
+    axios({
+      method: "patch",
+      url: `http://localhost:3000/links/${id}`,
+      data: { link: { slug: urlUpdate } },
+    })
+  }
+
+  const handleDestroyUrl = id => {
+    axios({
+      method: "delete",
+      url: `http://localhost:3000/links/${id}`,
+    })
+      .then(res => {
+        if (res.data && res.data.status === 200) {
+          message.success("Url Deleted")
+        } else {
+          message.error("Cannot Delete Url")
+        }
+      })
+      .catch(() => message.error("Something went wrong"))
+  }
+
+  const columns = [
+    {
+      title: "Shorten Url",
+      render: record => {
+        if (editStatus) {
+          const slug = record && record.shorten_url && record.shorten_url.split("/")[3]
+
+          return (
+            <div style={{ display: "flex" }}>
+              <Input defaultValue={slug} onChange={handleChangeIputUrlUpdate} />
+              <Button type="primary" onClick={() => handleSaveUrl(record.id)}>
+                Save
+              </Button>
+            </div>
+          )
+        } else {
+          return <div>{record.shorten_url}</div>
+        }
+      },
+    },
+    {
+      title: "Action",
+      render: record => {
+        return (
+          <div style={{ display: "flex" }}>
+            <div style={{ paddingRight: "1rem" }} onClick={() => handleChangeEditStatus(record.id)}>
+              <EditOutlined />
+            </div>
+            <div onClick={() => handleDestroyUrl(record.id)}>
+              <DeleteOutlined />
+            </div>
+          </div>
+        )
+      },
+    },
+  ]
+
   const [url, setUrl] = useState("")
   const [shortenUrls, setShortenUrls] = useState([])
 
@@ -39,7 +85,6 @@ function App() {
       data: { link: { url } },
     })
       .then(res => {
-        console.log("rs", res)
         if (res.data && res.data.status === 200) {
           message.success("Shorten Url generated")
         } else {
