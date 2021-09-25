@@ -1,13 +1,72 @@
 import axios from "axios"
 import "./App.css"
 import "antd/dist/antd.css"
-import { Button, Input, message, Table } from "antd"
+import { Button, Input, message, Table, Pagination } from "antd"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useState, useEffect } from "react"
 
 function App() {
+  const columns = [
+    {
+      title: "Shorten Url",
+      width: "60%",
+      render: record => {
+        if (editStatus) {
+          const slug = record && record.shorten_url && record.shorten_url.split("/")[3]
+
+          return (
+            <div style={{ display: "flex" }}>
+              <Input defaultValue={slug} onChange={handleChangeIputUrlUpdate} />
+              <Button type="primary" onClick={() => handleSaveUrl(record.id)} style={{ marginRight: "1rem" }}>
+                Save
+              </Button>
+              <Button type="ghost" onClick={() => window.location.reload()}>
+                Cancel
+              </Button>
+            </div>
+          )
+        } else {
+          return (
+            <div>
+              <a href={record.shorten_url} target="_blank" rel="noreferrer">
+                {record.shorten_url}
+              </a>
+            </div>
+          )
+        }
+      },
+    },
+    {
+      title: "Clicks Count",
+      width: "20%",
+      key: "click_count",
+      index: "click_count",
+      render: record => <p>{record.click_count}</p>,
+    },
+    {
+      title: "Action",
+      width: "20%",
+      render: record => {
+        return (
+          <div style={{ display: "flex" }}>
+            <div style={{ paddingRight: "1rem" }} onClick={() => handleChangeEditStatus(record.id)}>
+              <EditOutlined />
+            </div>
+            <div onClick={() => handleDestroyUrl(record.id)}>
+              <DeleteOutlined />
+            </div>
+          </div>
+        )
+      },
+    },
+  ]
+
   const [editStatus, setEditStatus] = useState(false)
   const [urlUpdate, setUrlUpdate] = useState("")
+  const [total, setTotal] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [url, setUrl] = useState("")
+  const [shortenUrls, setShortenUrls] = useState([])
 
   const handleChangeEditStatus = () => {
     setEditStatus(true)
@@ -43,6 +102,7 @@ function App() {
       .then(res => {
         if (res.data && res.data.status === 200) {
           message.success("Url Deleted")
+          window.location.reload()
         } else {
           message.error("Cannot Delete Url")
         }
@@ -50,58 +110,16 @@ function App() {
       .catch(() => message.error("Something went wrong"))
   }
 
-  const columns = [
-    {
-      title: "Shorten Url",
-      render: record => {
-        if (editStatus) {
-          const slug = record && record.shorten_url && record.shorten_url.split("/")[3]
-
-          return (
-            <div style={{ display: "flex" }}>
-              <Input defaultValue={slug} onChange={handleChangeIputUrlUpdate} />
-              <Button type="primary" onClick={() => handleSaveUrl(record.id)} style={{ marginRight: "1rem" }}>
-                Save
-              </Button>
-              <Button type="ghost" onClick={() => window.location.reload()}>
-                Cancel
-              </Button>
-            </div>
-          )
-        } else {
-          return <div>{record.shorten_url}</div>
-        }
-      },
-    },
-    {
-      title: "Action",
-      render: record => {
-        return (
-          <div style={{ display: "flex" }}>
-            <div style={{ paddingRight: "1rem" }} onClick={() => handleChangeEditStatus(record.id)}>
-              <EditOutlined />
-            </div>
-            <div onClick={() => handleDestroyUrl(record.id)}>
-              <DeleteOutlined />
-            </div>
-          </div>
-        )
-      },
-    },
-  ]
-
-  const [url, setUrl] = useState("")
-  const [shortenUrls, setShortenUrls] = useState([])
-
   const createLink = () => {
     axios({
       method: "post",
       url: "http://localhost:3000/links",
-      data: { link: { url } },
+      data: { link: { url: url, user_id: 1 } },
     })
       .then(res => {
         if (res.data && res.data.status === 200) {
           message.success("Shorten Url generated")
+          window.location.reload()
         } else {
           message.error("Generate Shorten Url Failed")
         }
@@ -111,12 +129,22 @@ function App() {
 
   const handleUrlValue = e => setUrl(e.target.value)
 
+  const getPageNumber = page => {
+    setCurrentPage(page)
+  }
+
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3000/links",
-    }).then(res => setShortenUrls(res.data.result))
-  }, [])
+      url: `http://localhost:3000/links?page=${currentPage}&page_size=5`,
+    }).then(
+      res => {
+        setShortenUrls(res.data.result)
+        setTotal(res.data.total)
+      },
+      [shortenUrls],
+    )
+  })
 
   return (
     <div className="App" style={{ padding: "5rem" }}>
@@ -127,7 +155,16 @@ function App() {
         </Button>
       </div>
 
-      <Table dataSource={shortenUrls} columns={columns} rowKey="id" />
+      <Table dataSource={shortenUrls} columns={columns} rowKey="id" pagination={false} />
+
+      <Pagination
+        style={{ marginTop: "2rem" }}
+        defaultCurrent={1}
+        total={total}
+        defaultPageSize={5}
+        onChange={page => getPageNumber(page)}
+        pageSize={5}
+      />
     </div>
   )
 }

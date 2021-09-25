@@ -15,7 +15,7 @@ ReactDOM.render(
       <Route exact path="/" component={SignUp} />
       <Route exact path="/sign_up" component={SignUp} />
       <Route exact path="/sign_in" component={SignIn} />
-      <Route exact path="/home" component={App} />
+      <Route exact path="/links" component={App} />
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root"),

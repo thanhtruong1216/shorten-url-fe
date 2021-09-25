@@ -12,7 +12,7 @@ function SignIn() {
     })
       .then(res => {
         if (res.status === 200 && res.data.token) {
-          window.location.href = "/home"
+          window.location.href = `/links`
           message.success("Sign in successfully")
         }
       })
