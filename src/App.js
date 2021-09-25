@@ -21,6 +21,18 @@ function App() {
       url: `http://localhost:3000/links/${id}`,
       data: { link: { slug: urlUpdate } },
     })
+      .then(res => {
+        if (res.data && res.data.status === 200) {
+          message.success("Url Updated")
+        } else if (urlUpdate.length > 9) {
+          message.error("Slug length is greater than 9")
+        } else if (urlUpdate.length === 0) {
+          message.error("Slug can't be blank")
+        } else {
+          message.error("Cannot update the link")
+        }
+      })
+      .catch(() => message.error("Something went wrong"))
   }
 
   const handleDestroyUrl = id => {
@@ -48,8 +60,11 @@ function App() {
           return (
             <div style={{ display: "flex" }}>
               <Input defaultValue={slug} onChange={handleChangeIputUrlUpdate} />
-              <Button type="primary" onClick={() => handleSaveUrl(record.id)}>
+              <Button type="primary" onClick={() => handleSaveUrl(record.id)} style={{ marginRight: "1rem" }}>
                 Save
+              </Button>
+              <Button type="ghost" onClick={() => window.location.reload()}>
+                Cancel
               </Button>
             </div>
           )
@@ -105,8 +120,8 @@ function App() {
 
   return (
     <div className="App" style={{ padding: "5rem" }}>
-      <div style={{ display: "flex" }}>
-        <Input placeholder="Basic usage" onChange={handleUrlValue} />
+      <div style={{ display: "flex", marginBottom: "2rem" }}>
+        <Input placeholder="Enter your url here..." onChange={handleUrlValue} />
         <Button type="primary" onClick={createLink}>
           Create link
         </Button>
