@@ -135,7 +135,7 @@ function App() {
   return (
     <>
       <div className="App" style={{ padding: "5rem" }}>
-        <Typography.Title>Generating Your Link</Typography.Title>
+        <Typography.Title>Shorten Your Link</Typography.Title>
 
         <div style={{ margin: "2rem 0" }}>
           <CreateLinkForm createLink={handleCreateLink} />

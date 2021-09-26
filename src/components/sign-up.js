@@ -16,7 +16,10 @@ function SignUp() {
           message.success("Sign up successfully")
         }
       })
-      .catch(() => message.error("Something went wrong"))
+      .catch(error => {
+        const errorText = (error?.response?.data?.errors || ["Something went wrong!"]).join(", ")
+        message.error(errorText)
+      })
   }
 
   const onFinishFailed = errorInfo => {
@@ -50,10 +53,6 @@ function SignUp() {
             rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input.Password />
-          </Form.Item>
-
-          <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 8 }}>
-            <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
