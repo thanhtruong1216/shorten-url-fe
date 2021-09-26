@@ -3,12 +3,12 @@ import { Form, Input, Button, Checkbox, message } from "antd"
 
 function SignUp() {
   const onFinish = values => {
-    const { email, password } = values
+    const { email, password, name } = values
 
     axios({
       method: "post",
       url: `http://localhost:3000/users`,
-      data: { user: { email, password } },
+      data: { user: { email, password, name } },
     })
       .then(res => {
         if (res.data && res.data.id) {
@@ -36,6 +36,10 @@ function SignUp() {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
+          <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input your name!" }]}>
+            <Input />
+          </Form.Item>
+
           <Form.Item label="Email" name="email" rules={[{ required: true, message: "Please input your email!" }]}>
             <Input />
           </Form.Item>
