@@ -1,5 +1,5 @@
 import axios from "axios"
-import { message, Table, Pagination } from "antd"
+import { message, Table, Pagination, Typography, Button } from "antd"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useState, useEffect } from "react"
 
@@ -20,19 +20,20 @@ function App() {
     },
     {
       title: "Shorten Url",
-      width: "60%",
+      width: "50%",
       render: record => {
         return (
           <div>
-            <Link
-              to={{
-                pathname: `/links/${record.id}/stats`,
-              }}
-            >
-              {record.shorten_url}
-            </Link>
+            <a href={record.url}>{record.shorten_url}</a>
           </div>
         )
+      },
+    },
+    {
+      title: "Total clicks",
+      width: "10%",
+      render: record => {
+        return <div>{record.total_clicks}</div>
       },
     },
     {
@@ -40,8 +41,8 @@ function App() {
       width: "20%",
       render: record => {
         return (
-          <div style={{ display: "flex" }}>
-            <div style={{ paddingRight: "1rem" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
               <Link
                 to={{
                   pathname: `/links/${record.id}/edit`,
@@ -51,9 +52,18 @@ function App() {
                 <EditOutlined />
               </Link>
             </div>
-            <div onClick={() => handleDestroyUrl(record.id)}>
+            <div onClick={() => handleDestroyUrl(record.id)} style={{ padding: "0 1rem" }}>
               <DeleteOutlined />
             </div>
+            <Button type="primary">
+              <Link
+                to={{
+                  pathname: `/links/${record.id}/stats`,
+                }}
+              >
+                See details
+              </Link>
+            </Button>
           </div>
         )
       },
@@ -61,47 +71,9 @@ function App() {
   ]
 
   const [total, setTotal] = useState(0)
+  const [invalidateLinks, setInvalidateLinks] = useState(Date())
   const [currentPage, setCurrentPage] = useState(1)
   const [shortenUrls, setShortenUrls] = useState([])
-
-  const handleDestroyUrl = id => {
-    axios({
-      method: "delete",
-      url: `http://localhost:3000/links/${id}`,
-      headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
-      },
-    })
-      .then(res => {
-        if (res.data && res.data.status === 200) {
-          message.success("Url Deleted")
-          window.location.reload()
-        } else {
-          message.error("Cannot Delete Url")
-        }
-      })
-      .catch(() => message.error("Something went wrong"))
-  }
-
-  const createLink = values => {
-    axios({
-      method: "post",
-      url: "http://localhost:3000/links",
-      data: { link: { url: values.url } },
-      headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
-      },
-    })
-      .then(res => {
-        if (res.data && res.data.status === 200) {
-          message.success("Shorten Url generated")
-          window.location.reload()
-        } else {
-          message.error("Generate Shorten Url Failed")
-        }
-      })
-      .catch(() => message.error("Something went wrong"))
-  }
 
   const getPageNumber = page => {
     setCurrentPage(page)
@@ -112,19 +84,60 @@ function App() {
       method: "get",
       url: `http://localhost:3000/links?page=${currentPage}&page_size=5`,
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: `Token ${localStorage.getItem("token")}`,
       },
     }).then(res => {
       setShortenUrls(res.data.result)
       setTotal(res.data.total)
     })
-  }, [currentPage])
+  }, [currentPage, invalidateLinks])
+
+  const handleDestroyUrl = id => {
+    axios({
+      method: "delete",
+      url: `http://localhost:3000/links/${id}`,
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then(res => {
+        if (res.data && res.data.status === 200) {
+          message.success("Url Deleted")
+          setInvalidateLinks(Date())
+        } else {
+          message.error("Cannot Delete Url")
+        }
+      })
+      .catch(() => message.error("Something went wrong"))
+  }
+
+  const handleCreateLink = values => {
+    axios({
+      method: "post",
+      url: "http://localhost:3000/links",
+      data: { link: { url: values.url } },
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    })
+      .then(res => {
+        if (res.data && res.data.status === 200) {
+          message.success("Shorten Url generated")
+          setInvalidateLinks(Date())
+        } else {
+          res.data && res.data.errors.map(error => message.error(error))
+        }
+      })
+      .catch(() => message.error("Something went wrong"))
+  }
 
   return (
     <>
       <div className="App" style={{ padding: "5rem" }}>
-        <div style={{ marginBottom: "2rem" }}>
-          <CreateLinkForm createLink={createLink} />
+        <Typography.Title>Generating Your Link</Typography.Title>
+
+        <div style={{ margin: "2rem 0" }}>
+          <CreateLinkForm createLink={handleCreateLink} />
         </div>
 
         <Table dataSource={shortenUrls} columns={columns} rowKey="id" pagination={false} />

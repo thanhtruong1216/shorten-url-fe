@@ -14,6 +14,9 @@ function Stats(props) {
     axios({
       method: "get",
       url: `http://localhost:3000/links/${props.match.params.id}`,
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
     }).then(res => {
       if (res.data && res.data.result) {
         setLinkDetail(res.data.result)
@@ -30,7 +33,7 @@ function Stats(props) {
       <Modal
         width="70%"
         style={{ maxHeight: "100px !important" }}
-        title="Stats"
+        title="Link Stats"
         visible
         onCancel={handleCancel}
         wrapClassName="custom-modal no-padding footer-center ant-modal-borderless title-center vertical-center-modal"
@@ -43,7 +46,9 @@ function Stats(props) {
           </div>
           <div>
             <h4>Short link</h4>
-            <p>{short_link}</p>
+            <a href={short_link} target="_blank">
+              {short_link}
+            </a>
           </div>
         </Card>
         <div style={{ display: "flex", justifyContent: "space-between" }}>

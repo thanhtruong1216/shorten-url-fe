@@ -14,7 +14,7 @@ function EditLinkForm(props) {
       method: "get",
       url: `http://localhost:3000/links/${props.match.params.id}`,
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: `Token ${localStorage.getItem("token")}`,
       },
     }).then(res => {
       setLinkDetail(res.data && res.data.result)
@@ -28,17 +28,15 @@ function EditLinkForm(props) {
       url: `http://localhost:3000/links/${props.match.params.id}`,
       data: { link: { slug, title } },
       headers: {
-        Authorization: "Token " + localStorage.getItem("token"),
+        Authorization: `Token ${localStorage.getItem("token")}`,
       },
     })
       .then(res => {
         if (res.data && res.data.status === 200) {
           message.success("Url Updated")
           handleCancel()
-        } else if (values.slug.length > 9) {
-          message.error("Slug length is greater than 9")
         } else {
-          message.error("Cannot update the link")
+          res.data && res.data.errors.map(error => message.error(error))
         }
       })
       .catch(() => message.error("Something went wrong"))

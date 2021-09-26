@@ -3,7 +3,7 @@ import { Form, Input, Button } from "antd"
 function CreateLinkForm(props) {
   return (
     <>
-      <Form onFinish={props.createLink} style={{ display: "flex" }}>
+      <Form onFinish={props.createLink} style={{ display: "flex", justifyContent: "center" }}>
         <Form.Item name="url" rules={[{ required: true, message: "Please input your url!" }]}>
           <Input placeholder="Enter your url here..." style={{ maxWidth: "50vw", width: "500px" }} />
         </Form.Item>
