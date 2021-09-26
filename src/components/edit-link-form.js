@@ -42,7 +42,11 @@ function EditLinkForm(props) {
       .catch(() => message.error("Something went wrong"))
   }
 
-  const { title, slug } = props.location && props.location.state
+  if (!linkDetail.link) {
+    return null
+  }
+
+  const { slug, title } = linkDetail.link
 
   return (
     <>

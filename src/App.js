@@ -2,6 +2,7 @@ import axios from "axios"
 import { message, Table, Pagination, Typography, Button } from "antd"
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons"
 import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 
 import { Link } from "react-router-dom"
 import CreateLinkForm from "./components/create-link-form"
@@ -24,7 +25,9 @@ function App() {
       render: record => {
         return (
           <div>
-            <a href={record.url}>{record.shorten_url}</a>
+            <a href={record.shorten_url} target="_blank">
+              {record.shorten_url}
+            </a>
           </div>
         )
       },
@@ -46,7 +49,6 @@ function App() {
               <Link
                 to={{
                   pathname: `/links/${record.id}/edit`,
-                  state: { slug: record.slug, title: record.title },
                 }}
               >
                 <EditOutlined />
@@ -74,6 +76,7 @@ function App() {
   const [invalidateLinks, setInvalidateLinks] = useState(Date())
   const [currentPage, setCurrentPage] = useState(1)
   const [shortenUrls, setShortenUrls] = useState([])
+  const location = useLocation()
 
   const getPageNumber = page => {
     setCurrentPage(page)
@@ -90,7 +93,7 @@ function App() {
       setShortenUrls(res.data.result)
       setTotal(res.data.total)
     })
-  }, [currentPage, invalidateLinks])
+  }, [currentPage, invalidateLinks, location.href])
 
   const handleDestroyUrl = id => {
     axios({
@@ -104,8 +107,6 @@ function App() {
         if (res.data && res.data.status === 200) {
           message.success("Url Deleted")
           setInvalidateLinks(Date())
-        } else {
-          message.error("Cannot Delete Url")
         }
       })
       .catch(() => message.error("Something went wrong"))
