@@ -25,7 +25,7 @@ function App() {
       render: record => {
         return (
           <div>
-            <a href={record.shorten_url} target="_blank">
+            <a href={record.shorten_url} target="_blank" rel="noreferrer">
               {record.shorten_url}
             </a>
           </div>

@@ -46,7 +46,7 @@ function Stats(props) {
           </div>
           <div>
             <h4>Short link</h4>
-            <a href={short_link} target="_blank">
+            <a href={short_link} target="_blank" rel="noreferrer">
               {short_link}
             </a>
           </div>

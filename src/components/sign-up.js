@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Form, Input, Button, Checkbox, message } from "antd"
+import { Form, Input, Button, message } from "antd"
 
 function SignUp() {
   const onFinish = values => {

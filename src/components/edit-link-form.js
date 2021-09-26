@@ -19,7 +19,7 @@ function EditLinkForm(props) {
     }).then(res => {
       setLinkDetail(res.data && res.data.result)
     })
-  }, [])
+  }, [props.match.params.id])
 
   const handleSaveUrl = values => {
     const { slug, title } = values
