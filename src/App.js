@@ -116,7 +116,7 @@ function App() {
   const handleCreateLink = values => {
     axios({
       method: "post",
-      url: "${apiUrl}/links",
+      url: `${apiUrl}/links`,
       data: { link: { url: values.url } },
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
