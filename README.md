@@ -1,12 +1,40 @@
 # <img src='public/studiovinari-brands.svg?raw=true' width="50" height="50"/> Shorten Url Project
 
+Hello,
+
+Thank you for checking out my assignment. You can have a quick video demo as follow:
+
+## Demo video
+
+Note: You should play at 1.5x speed
+
+[Demo 1](https://www.loom.com/share/6807c890ae6642158c695c0a93e235ff)
+[Demo 2](https://www.loom.com/share/682a3a5c92de4f368f3ad0e115bb40e3)
+
 ## Clone project:
 
 ```
 $ git clone git@github.com:thanhtruong1216/shorten-url-fe.git
 ```
 
-## The type of commit messages
+or
+
+```
+$ git clone https://github.com/thanhtruong1216/shorten-url-fe.git
+```
+
+## Run project
+
+```
+$ npm install
+$ npm start
+```
+
+- Go to http://localhost:3001/sign_up to create new account
+- Go to http://localhost:3001/sign_in to log in
+- Go to http://localhost:3001/links to create new link and see your links
+
+## Project convention
 
 - feat: a new feature
 - fix: a bug fix
