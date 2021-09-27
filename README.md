@@ -39,8 +39,8 @@ $ npm start
 
 ### front_end_base_url
 
-- On local: "http://localhost:3000"
-- On production: "https://blooming-badlands-76554.herokuapp.com"
+- Local: http://localhost:3000
+- Production: https://blooming-badlands-76554.herokuapp.com
 
 ## Use application
 
