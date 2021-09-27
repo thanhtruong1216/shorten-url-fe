@@ -3,6 +3,8 @@ import axios from "axios"
 import { Modal, Card } from "antd"
 import dayjs from "dayjs"
 
+import apiUrl from "../helpers/api-url"
+
 function Stats(props) {
   const [linkDetail, setLinkDetail] = useState({})
 
@@ -13,7 +15,7 @@ function Stats(props) {
   useEffect(() => {
     axios({
       method: "get",
-      url: `http://localhost:3000/links/${props.match.params.id}`,
+      url: `${apiUrl}/links/${props.match.params.id}`,
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },

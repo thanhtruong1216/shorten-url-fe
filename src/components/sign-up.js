@@ -1,13 +1,15 @@
 import axios from "axios"
 import { Form, Input, Button, message } from "antd"
 
+import apiUrl from "../helpers/api-url"
+
 function SignUp() {
   const onFinish = values => {
     const { email, password, name } = values
 
     axios({
       method: "post",
-      url: `http://localhost:3000/users`,
+      url: `${apiUrl}/users`,
       data: { user: { email, password, name } },
     })
       .then(res => {

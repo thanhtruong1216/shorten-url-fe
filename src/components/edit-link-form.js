@@ -2,6 +2,8 @@ import { Form, Input, Button, Modal, message } from "antd"
 import axios from "axios"
 import { useState, useEffect } from "react"
 
+import apiUrl from "../helpers/api-url"
+
 function EditLinkForm(props) {
   const [linkDetail, setLinkDetail] = useState({})
 
@@ -12,7 +14,7 @@ function EditLinkForm(props) {
   useEffect(() => {
     axios({
       method: "get",
-      url: `http://localhost:3000/links/${props.match.params.id}`,
+      url: `${apiUrl}/links/${props.match.params.id}`,
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -25,7 +27,7 @@ function EditLinkForm(props) {
     const { slug, title } = values
     axios({
       method: "patch",
-      url: `http://localhost:3000/links/${props.match.params.id}`,
+      url: `${apiUrl}/links/${props.match.params.id}`,
       data: { link: { slug, title } },
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,

@@ -10,6 +10,7 @@ Note: You should play at 1.5x speed
 
 [Demo 1](https://www.loom.com/share/6807c890ae6642158c695c0a93e235ff)
 [Demo 2](https://www.loom.com/share/682a3a5c92de4f368f3ad0e115bb40e3)
+[Demo 3](https://www.loom.com/share/227a4f63e68a4a5ebf3920a17d60bdb4)
 
 ## Clone project:
 

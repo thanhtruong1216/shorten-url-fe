@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom"
 
 import { Link } from "react-router-dom"
 import CreateLinkForm from "./components/create-link-form"
+import apiUrl from "././helpers/api-url"
 
 import "./App.css"
 import "antd/dist/antd.css"
@@ -85,7 +86,7 @@ function App() {
   useEffect(() => {
     axios({
       method: "get",
-      url: `http://localhost:3000/links?page=${currentPage}&page_size=5`,
+      url: `${apiUrl}/links?page=${currentPage}&page_size=5`,
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -98,7 +99,7 @@ function App() {
   const handleDestroyUrl = id => {
     axios({
       method: "delete",
-      url: `http://localhost:3000/links/${id}`,
+      url: `${apiUrl}/links/${id}`,
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
@@ -115,7 +116,7 @@ function App() {
   const handleCreateLink = values => {
     axios({
       method: "post",
-      url: "http://localhost:3000/links",
+      url: "${apiUrl}/links",
       data: { link: { url: values.url } },
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,

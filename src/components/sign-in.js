@@ -1,13 +1,15 @@
 import axios from "axios"
 import { Form, Input, Button, message } from "antd"
 
+import apiUrl from "../helpers/api-url"
+
 function SignIn() {
   const onFinish = values => {
     const { email, password } = values
 
     axios({
       method: "post",
-      url: `http://localhost:3000/auth/login`,
+      url: `${apiUrl}/auth/login`,
       data: { user: { email, password } },
     })
       .then(res => {
